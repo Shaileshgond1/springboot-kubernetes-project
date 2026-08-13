@@ -1,0 +1,767 @@
+GITHUB ACTIONS CI/CD + DOCKER + KUBERNETES NOTES
+
+1. OVERALL PIPELINE
+
+The project pipeline we are building is:
+
+Git Push
+    ↓
+GitHub
+    ↓
+CI FLOW
+    ↓
+Checkout source code
+    ↓
+Java 8
+    ↓
+Maven build
+    ↓
+Run tests
+    ↓
+Create JAR
+    ↓
+Upload JAR as Artifact
+    ↓
+GitHub Artifact Storage
+    ↓
+CD FLOW
+    ↓
+Download JAR
+    ↓
+Docker Build
+    ↓
+Docker Image
+    ↓
+Docker Hub
+    ↓
+EC2 / Minikube
+    ↓
+Kubernetes Deployment
+    ↓
+Spring Boot Pod
+
+
+2. CI FLOW
+
+CI means Continuous Integration.
+
+The CI workflow is responsible for:
+- Getting the source code
+- Setting up Java
+- Building the application
+- Running tests
+- Creating the JAR
+- Uploading the JAR as a GitHub Actions artifact
+
+Example CI workflow:
+
+name: ci-flow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: vet_app
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Build application
+        run: mvn clean package -DskipTests
+
+      - name: Run tests
+        run: mvn test
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/vet_app
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: root
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: springboot-jar
+          path: target/*.jar
+
+
+3. WHEN CI STARTS
+
+This part:
+
+on:
+  push:
+    branches:
+      - main
+
+means:
+
+Run the CI workflow whenever code is pushed to the main branch.
+
+If you push to another branch, this workflow will not run.
+
+
+4. GITHUB ACTIONS RUNNER
+
+This:
+
+runs-on: ubuntu-latest
+
+means GitHub creates a temporary Ubuntu Linux machine called a runner.
+
+The runner executes the workflow.
+
+The runner is temporary. When the workflow finishes, the runner is normally destroyed.
+
+Think:
+
+GitHub
+  ↓
+Temporary Ubuntu Runner
+  ↓
+Run commands
+  ↓
+Workflow finishes
+  ↓
+Runner disappears
+
+
+5. CHECKOUT SOURCE CODE
+
+This:
+
+- name: Checkout source code
+  uses: actions/checkout@v4
+
+means:
+
+Get the repository source code onto the GitHub Actions runner.
+
+Before checkout, the runner is basically a fresh machine.
+
+After checkout, it has:
+
+SPRINGBPROJECT/
+├── src/
+├── pom.xml
+├── Dockerfile
+└── .github/
+    └── workflows/
+
+
+6. JAVA SETUP
+
+This:
+
+- name: Set up Java
+  uses: actions/setup-java@v4
+  with:
+    java-version: '8'
+    distribution: 'temurin'
+    cache: maven
+
+means:
+- Install/configure Java 8
+- Use Eclipse Temurin distribution
+- Enable Maven dependency caching
+
+The Spring Boot project uses Java 8 because pom.xml contains:
+
+<java.version>1.8</java.version>
+
+
+7. MAVEN BUILD
+
+This:
+
+mvn clean package -DskipTests
+
+does the following:
+
+clean:
+    Removes the old target directory.
+
+package:
+    Compiles the project, packages it, and creates the JAR.
+
+-DskipTests:
+    Skips running tests during this Maven package command.
+
+After this command, Maven creates:
+
+target/
+└── Days7-0.0.1-SNAPSHOT.jar
+
+The exact JAR name comes from pom.xml.
+
+For example:
+
+<artifactId>Days7</artifactId>
+<version>0.0.1-SNAPSHOT</version>
+
+results in:
+
+Days7-0.0.1-SNAPSHOT.jar
+
+
+8. RUN TESTS
+
+This:
+
+mvn test
+
+runs the project's tests.
+
+The pipeline first builds the application with tests skipped and then explicitly runs:
+
+mvn test
+
+This separates build and test stages so it is easy to see which stage fails.
+
+
+9. MYSQL SERVICE IN GITHUB ACTIONS
+
+If Spring Boot tests require MySQL, GitHub Actions can start MySQL as a service container.
+
+Example:
+
+services:
+  mysql:
+    image: mysql:8.0
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vet_app
+    ports:
+      - 3306:3306
+
+This creates a temporary MySQL 8.0 database for the CI job.
+
+The application can connect to:
+
+jdbc:mysql://127.0.0.1:3306/vet_app
+
+Username:
+
+root
+
+Password:
+
+root
+
+Important:
+Do not create MYSQL_USER: root. The root account is already created by the MySQL image.
+
+
+10. MYSQL HEALTH CHECK
+
+This:
+
+options: >-
+  --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+  --health-interval=10s
+  --health-timeout=5s
+  --health-retries=10
+
+tells GitHub Actions to check whether MySQL is ready.
+
+The pipeline waits for MySQL to become healthy before continuing.
+
+This avoids a situation where Maven tests start before MySQL is ready.
+
+
+11. SPRING DATASOURCE ENVIRONMENT VARIABLES
+
+The test step contains:
+
+env:
+  SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/vet_app
+  SPRING_DATASOURCE_USERNAME: root
+  SPRING_DATASOURCE_PASSWORD: root
+
+These environment variables tell Spring Boot which database to use during the CI tests.
+
+They override or provide the corresponding Spring datasource configuration for the test environment.
+
+Always make sure:
+- Database name matches the application
+- Username matches MySQL
+- Password matches MySQL
+- Port is correct
+
+
+12. TARGET DIRECTORY
+
+Maven creates the target directory during the build.
+
+Example:
+
+SPRINGBPROJECT/
+├── src/
+├── pom.xml
+└── target/
+    ├── classes/
+    ├── test-classes/
+    └── Days7-0.0.1-SNAPSHOT.jar
+
+The target directory is generated output.
+
+Normally, target/ should NOT be committed to Git.
+
+It is usually included in .gitignore.
+
+
+13. JAR IS CREATED ON THE RUNNER
+
+When GitHub Actions executes:
+
+mvn clean package -DskipTests
+
+the JAR is created on the temporary GitHub Actions runner.
+
+Example:
+
+GitHub Actions Runner
+└── project
+    └── target/
+        └── Days7-0.0.1-SNAPSHOT.jar
+
+The JAR is NOT automatically stored in the Git repository.
+
+
+14. GITHUB ACTIONS ARTIFACT
+
+This step:
+
+- name: Upload JAR
+  uses: actions/upload-artifact@v4
+  with:
+    name: springboot-jar
+    path: target/*.jar
+
+uploads the JAR from the runner to GitHub Actions artifact storage.
+
+Important distinction:
+
+WRONG:
+Runner → Git repository /target
+
+CORRECT:
+Runner → GitHub Actions Artifact Storage
+
+The Git repository itself does not receive the generated JAR.
+
+
+15. WHERE TO FIND THE ARTIFACT
+
+After CI succeeds:
+
+GitHub Repository
+    ↓
+Actions
+    ↓
+Open the latest ci-flow run
+    ↓
+Workflow Summary
+    ↓
+Artifacts
+    ↓
+springboot-jar
+
+The artifact can be downloaded from the workflow run.
+
+The artifact is attached to that workflow run and is separate from the Git source repository.
+
+
+16. CI ARTIFACT FLOW
+
+The exact flow is:
+
+Git Push
+    ↓
+GitHub Actions CI Runner
+    ↓
+Checkout source
+    ↓
+Java 8
+    ↓
+Maven build
+    ↓
+target/Days7-0.0.1-SNAPSHOT.jar
+    ↓
+actions/upload-artifact@v4
+    ↓
+GitHub Artifact Storage
+
+
+17. CD FLOW
+
+CD means Continuous Delivery/Deployment.
+
+Our CD workflow starts after CI completes successfully.
+
+The CD workflow:
+- Waits for CI
+- Checks whether CI succeeded
+- Creates a fresh Ubuntu runner
+- Checks out the exact source commit used by CI
+- Downloads the JAR artifact
+- Builds the Docker image
+- Logs in to Docker Hub
+- Pushes the Docker image to Docker Hub
+
+
+18. CD TRIGGER
+
+The CD workflow uses:
+
+on:
+  workflow_run:
+    workflows: ["ci-flow"]
+    types:
+      - completed
+
+Meaning:
+
+Watch the workflow named ci-flow.
+
+When ci-flow finishes, trigger cd-flow.
+
+completed means the CI workflow has finished, whether it succeeded or failed.
+
+Therefore, we need an additional condition to make CD run only when CI succeeds.
+
+
+19. ONLY RUN CD IF CI SUCCEEDED
+
+This:
+
+if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+means:
+
+Only run the CD job if the CI workflow finished successfully.
+
+If CI:
+
+Build = failure
+or
+Test = failure
+
+then:
+
+CD = STOP
+
+If CI:
+
+Build = success
+and
+Test = success
+
+then:
+
+CD = RUN
+
+This prevents Docker images from being built from failed builds.
+
+
+20. CHECKOUT EXACT CI COMMIT
+
+The CD checkout step is:
+
+- name: Checkout source code
+  uses: actions/checkout@v4
+  with:
+    ref: ${{ github.event.workflow_run.head_sha }}
+
+The head_sha identifies the exact commit that caused the CI workflow to run.
+
+Example:
+
+Commit A
+   ↓
+CI builds Commit A
+   ↓
+CI succeeds
+   ↓
+CD starts
+   ↓
+CD checks out Commit A
+
+This keeps CI and CD synchronized to the same source version.
+
+
+21. DOWNLOAD JAR ARTIFACT
+
+CD uses:
+
+- name: Download JAR artifact
+  uses: actions/download-artifact@v5
+  with:
+    name: springboot-jar
+    path: target
+    run-id: ${{ github.event.workflow_run.id }}
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+
+Meaning:
+
+Download the artifact named springboot-jar from the specific CI workflow run that triggered CD.
+
+The JAR is placed into:
+
+target/
+
+So the fresh CD runner becomes:
+
+SPRINGBPROJECT/
+├── src/
+├── pom.xml
+├── Dockerfile
+└── target/
+    └── Days7-0.0.1-SNAPSHOT.jar
+
+
+22. GITHUB_TOKEN AND RUN-ID
+
+This:
+
+run-id: ${{ github.event.workflow_run.id }}
+
+means:
+
+Download the artifact from the exact CI workflow run that triggered the CD workflow.
+
+This avoids accidentally downloading an artifact from an older CI run.
+
+This:
+
+github-token: ${{ secrets.GITHUB_TOKEN }}
+
+uses GitHub's automatically provided workflow token to authenticate the artifact download.
+
+GITHUB_TOKEN is provided automatically by GitHub Actions. You normally do not create it yourself.
+
+
+23. CHECK THE DOWNLOADED JAR
+
+This:
+
+- name: Check downloaded JAR
+  run: ls -lh target/
+
+is a simple Linux command that lists the files in target/.
+
+Example output:
+
+target/
+└── Days7-0.0.1-SNAPSHOT.jar
+
+This step is useful for debugging.
+
+If the JAR is visible, the artifact download worked.
+
+Later, this step can be removed if desired.
+
+
+24. DOCKER LOGIN, BUILD AND PUSH
+
+Docker login:
+
+- name: Login to Docker Hub
+  uses: docker/login-action@v3
+  with:
+    username: ${{ secrets.DOCKERHUB_USERNAME }}
+    password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+GitHub Secrets required:
+
+DOCKERHUB_USERNAME
+    = Your Docker Hub username
+
+DOCKERHUB_TOKEN
+    = Docker Hub access token
+
+Do not put your Docker Hub password or token directly in the YAML.
+
+Then Docker build:
+
+- name: Build Docker image
+  run: |
+    docker build \
+      -t ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest .
+
+This builds the Docker image using the Dockerfile in the current directory.
+
+The Dockerfile can be:
+
+FROM eclipse-temurin:8-jre
+
+WORKDIR /app
+
+COPY target/*.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+Docker reads the Dockerfile and copies the downloaded JAR into the image.
+
+The image is tagged as:
+
+USERNAME/springboot-kubernetes-project:latest
+
+Example:
+
+shaileshgond/springboot-kubernetes-project:latest
+
+The parts are:
+
+USERNAME / REPOSITORY : TAG
+    |          |         |
+    |          |         └── latest
+    |          └──────────── repository name
+    └─────────────────────── Docker Hub username
+
+Finally:
+
+- name: Push Docker image
+  run: |
+    docker push \
+      ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest
+
+uploads the Docker image from the GitHub runner to Docker Hub.
+
+
+COMPLETE CI + CD ARCHITECTURE
+
+              Developer
+                  |
+                  | git push
+                  v
+             GitHub Repo
+                  |
+                  v
+        +--------------------+
+        |      CI FLOW       |
+        +--------------------+
+                  |
+          Checkout source
+                  |
+              Java 8
+                  |
+           Maven build
+                  |
+             Run tests
+                  |
+                  v
+                JAR
+                  |
+                  v
+       GitHub Artifact Storage
+                  |
+                  v
+        +--------------------+
+        |      CD FLOW       |
+        +--------------------+
+                  |
+        Checkout exact commit
+                  |
+          Download JAR
+                  |
+            Docker build
+                  |
+            Docker image
+                  |
+            Docker login
+                  |
+                  v
+             Docker Hub
+                  |
+                  v
+                EC2
+                  |
+               Minikube
+                  |
+             Kubernetes
+                  |
+              Pod running
+                  |
+           Spring Boot App
+
+
+KEY CONCEPTS TO REMEMBER
+
+1. Git repository stores SOURCE CODE.
+2. Maven creates the JAR.
+3. target/ is generated by Maven.
+4. The JAR is first created on the temporary CI runner.
+5. upload-artifact uploads the JAR to GitHub Artifact Storage.
+6. The CD runner is a new temporary machine.
+7. download-artifact brings the JAR from GitHub Artifact Storage to the CD runner.
+8. Dockerfile uses the JAR to build a Docker image.
+9. Docker login authenticates with Docker Hub.
+10. docker push sends the image to Docker Hub.
+11. The next stage is deploying that Docker image to Minikube/Kubernetes on EC2.
+12. Do not commit target/ or generated JAR files to Git.
+
+--> github.event.workflow_run.conclusion / .head_sha / .id
+
+| Property      | Meaning                            | Typical use                      |
+| ------------- | ---------------------------------- | -------------------------------- |
+| `.conclusion` | Did CI succeed/fail?               | Decide whether CD should run     |
+| `.head_sha`   | Exact commit SHA that CI built     | Checkout the exact same code     |
+| `.id`         | ID of the specific CI workflow run | Download artifacts from that run |
+
+
+- name: Download JAR
+  uses: actions/download-artifact@v5
+  with:
+    name: springboot-jar
+    path: target
+
+
+- name: Upload JAR
+  uses: actions/upload-artifact@v4
+  with:
+    name: springboot-jar
+    path: target/*.jar
+
+
+
+
+|         | Upload                          | Download                      |
+| ------- | ------------------------------- | ----------------------------- |
+| `name`  | Name the artifact               | Find artifact with this name  |
+| `path`  | Where the file currently exists | Where to put downloaded files |
+| Example | `target/*.jar`                  | `target`                      |
+
+
+
+
+
+
+
+
+

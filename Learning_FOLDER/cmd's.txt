@@ -1,0 +1,17 @@
+
+
+
+
+
+
+
+docker run -d --name "app" -p 8080:8080 --network app-network 8b40d23d619b
+
+
+docker run -d \
+  --name mysql \
+  --network app-network \
+  -e MYSQL_ROOT_PASSWORD=root \
+  -e MYSQL_DATABASE=vet_app \
+  -p 3306:3306 \
+  mysql:8.0
