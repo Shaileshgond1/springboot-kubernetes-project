@@ -13,8 +13,8 @@ jobs:
       - name: Download JAR artifact
         uses: actions/download-artifact@v5
         with:
-          name: springboot-jar
-          path: target
+          name: spring-boot.jar
+          path: target/
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: docker hub login
