@@ -1,0 +1,38 @@
+name: "Continous-Integration"
+on:
+  push:
+    branches:
+      - main
+jobs: 
+  build:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image:
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: vet_app
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    steps:
+      - name: copy code to runner
+        uses: actions/checkout@v4 
+
+      - name: setup Java
+        uses: actions/setup-java@v4 
+
+      - name: building jar
+        uses: mvn clean install
+
+      - name: upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: spring-boot.jar
+          path: target/*.jar
+ 
