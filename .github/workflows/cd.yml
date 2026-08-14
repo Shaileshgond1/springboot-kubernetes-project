@@ -1,0 +1,30 @@
+name: Continous-Deployment
+on:
+  workflow_run:
+    workflows: ["Continous-Integration"]
+    types:
+      - completed
+
+jobs:
+  build: 
+    if: ${{github.workflow.even.workflow_run.conclusion="success"}}
+    runs_on: ubuntu-latest
+    steps:
+      - name: Download JAR artifact
+        uses: actions/download-artifact@v5
+        with:
+          name: springboot-jar
+          path: target
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: docker hub login
+        steps: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: build docker image
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest
+    
+      - name: pushing docker image to docker hub
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest     
