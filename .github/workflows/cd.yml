@@ -1,23 +1,21 @@
-name: Continous-Deployment
+name: cd-flow
 
 on:
   workflow_run:
-    workflows: ["Continous-Integration"]
+    workflows: ["ci-flow"]
     types:
       - completed
 
-permissions:
-  actions: read
-  contents: read
-
 jobs:
-  build:
+  docker:
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout code
+      - name: Checkout source code
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Download JAR artifact
         uses: actions/download-artifact@v5
@@ -25,15 +23,23 @@ jobs:
           name: spring-boot.jar
           path: target
           run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: docker hub login
+      - name: Check downloaded JAR
+        run: ls -lh target/
+
+      - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: build docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest .
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest .
 
-      - name: pushing docker image to docker hub
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest
+      - name: Push Docker image
+        run: |
+          docker push \
+            ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:latest
