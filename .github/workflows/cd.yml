@@ -7,14 +7,14 @@ on:
 
 jobs:
   build: 
-    if: ${{github.workflow.even.workflow_run.conclusion="success"}}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs_on: ubuntu-latest
     steps:
       - name: Download JAR artifact
         uses: actions/download-artifact@v5
         with:
-          name: spring-boot.jar
-          path: target/
+          name: springboot-jar
+          path: target
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: docker hub login
