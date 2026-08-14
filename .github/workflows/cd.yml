@@ -2,7 +2,7 @@ name: cd-flow
 
 on:
   workflow_run:
-    workflows: ["ci-flow"]
+    workflows: ["Continous-Integration"]
     types:
       - completed
 
