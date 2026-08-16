@@ -24,3 +24,8 @@ after changing and pushed changes in git then i got new image
 then i louched pod again and check is it taking new image or not using below cmd
 
 ====> kubectl describe pod myapp
+
+
+minikube ip and url : http://192.168.49.2:30080/login
+
+
