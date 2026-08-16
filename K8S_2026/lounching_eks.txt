@@ -1,0 +1,32 @@
+lounch ec2 instance
+
+then
+
+kubectl install:
+
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+rm -f kubectl
+
+
+sudo apt install unzip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+aws --version
+
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
+
+
+Step - 2 : Create IAM role & attach to EKS Management Host
+
+
+now connect ec2 and execute cmd to lounch eks:
+
+eksctl create cluster --name ashokit-cluster4 --region ap-south-1 --node-type t3.medium  --zones ap-south-1a,ap-south-1b
+
+
+to delete cluster::==>>> eksctl delete cluster --name sbsa --region ca-central-1

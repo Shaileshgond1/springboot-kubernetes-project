@@ -1,0 +1,36 @@
+minikube status
+
+kubectl create namespace argocd
+
+kubectl apply -n argocd --server-side --force-conflicts \
+  -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+kubectl get pods -n argocd
+
+kubectl get pods -n argocd -w
+
+kubectl get svc -n argocd
+
+NAME                      TYPE        CLUSTER-IP      PORT(S)
+argocd-server             ClusterIP   ...             80/TCP,443/TCP   --> this is important running on application
+argocd-repo-server        ClusterIP   ...             8081/TCP
+argocd-redis              ClusterIP   ...             6379/TCP
+
+
+kubectl port-forward --address 0.0.0.0 \
+  -n argocd \
+  service/argocd-server \
+  8081:443
+
+
+
+kubectl port-forward --address 0.0.0.0 -n argocd service/argocd-server 8081:443
+
+
+https://<EC2-PUBLIC-IP>:8081
+
+
+8. Get the initial admin password
+
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath="{.data.password}" | base64 -d; echo

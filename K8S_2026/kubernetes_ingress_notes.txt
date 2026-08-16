@@ -1,0 +1,913 @@
+KUBERNETES INGRESS — COMPLETE NOTES FROM MY MINIKUBE PRACTICE
+================================================================
+
+minikube addons enable ingress --> this install nginx ingress controller
+
+   above cmd --> Minikube installed the NGINX Ingress Controller and created its required Kubernetes resources, including the Service you can see serive using below cmd:
+          kubectl get svc -n ingress-nginx
+o/p --> NAME                                 TYPE       PORT(S)
+ingress-nginx-controller                    NodePort   80:32733/TCP,443:32625/TCP
+ingress-nginx-controller-admission          ClusterIP  443/TCP
+Check: kubectl get pods -n ingress-nginx 
+
+o/p -> ingress-nginx-controller-xxxxx   1/1   Running  9  {means The admission Pods showing Completed is normal.}
+
+Check: the IngressClass
+
+    kubectl get ingressclass 
+
+o/p -> NAME    CONTROLLER
+       nginx   k8s.io/ingress-nginx   {This confirms that the NGINX Ingress Controller is available.}
+
+IMP:
+
+minikube addons enable ingress
+        ↓
+"Install the traffic controller"
+        ↓
+NGINX Ingress Controller
+        ↓
+ingress-nginx-controller Service
+        ↓
+Ready to receive traffic
+
+
+kubectl apply -f ingress.yml
+        ↓
+"Tell the controller where to send traffic"
+        ↓
+/login → serv:8080      
+
+This note summarizes what I practiced and understood from Deployment,
+Service, NodePort, kubectl port-forward, and Ingress on Minikube running
+inside an EC2 instance.
+
+1. STARTING KUBERNETES SETUP
+----------------------------
+
+I already had a Spring Boot application running on port 8080.
+
+Deployment:
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp-container
+          image: sw1236/springboot-kubernetes-project
+          ports:
+            - containerPort: 8080
+
+Important:
+- Deployment creates and manages 3 Pods.
+- The Pods have the label:
+    app: myapp
+- The container is expected to have the Spring Boot application listening
+  on port 8080.
+- containerPort: 8080 documents the container port; it does not itself
+  force Spring Boot to listen on 8080.
+
+
+2. KUBERNETES SERVICE
+---------------------
+
+I created this Service:
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: serv
+spec:
+  selector:
+    app: myapp
+  type: NodePort
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 30090
+
+Meaning of the ports:
+
+- port: 8080
+    The port exposed by the Kubernetes Service.
+
+- targetPort: 8080
+    The port on the selected Pods where traffic is sent.
+
+- nodePort: 30090
+    The port exposed on the Kubernetes node.
+
+Traffic:
+
+    NodePort 30090
+          |
+          v
+    Service 8080
+          |
+          v
+    Pod 8080
+
+
+3. WHY THE SERVICE WAS WORKING
+------------------------------
+
+I checked:
+
+kubectl describe service serv
+
+Important output:
+
+Selector:                 app=myapp
+Type:                     NodePort
+IP:                       10.97.119.222
+Port:                     8080/TCP
+TargetPort:               8080/TCP
+NodePort:                 30090/TCP
+Endpoints:                10.244.0.4:8080,10.244.0.6:8080,10.244.0.5:8080
+
+The Endpoints proved that the Service successfully found all 3 Pods.
+
+The Service selector:
+
+    app=myapp
+
+matched the Deployment Pod labels:
+
+    app: myapp
+
+Therefore the Service had 3 backend endpoints.
+
+
+4. CHECKING PODS
+----------------
+
+Useful command:
+
+kubectl get pods -l app=myapp -o wide
+
+This shows:
+- Pod names
+- Ready status
+- Pod IPs
+- Node
+
+The Pod IPs can be matched with the Service endpoints.
+
+Example concept:
+
+    Pod A -> 10.244.0.4:8080
+    Pod B -> 10.244.0.5:8080
+    Pod C -> 10.244.0.6:8080
+
+
+5. KUBECTL PORT-FORWARD TO THE APPLICATION SERVICE
+---------------------------------------------------
+
+I used:
+
+kubectl port-forward --address 0.0.0.0 service/serv 30090:8080
+
+Meaning:
+
+    EC2 :30090
+         |
+         v
+    kubectl port-forward
+         |
+         v
+    Service "serv" :8080
+         |
+         v
+    One of the backend Pods :8080
+
+Important:
+- --address 0.0.0.0 makes kubectl listen on all network interfaces.
+- Without it, port-forward normally listens only on localhost.
+- This was useful because the Kubernetes environment was running inside EC2.
+- kubectl port-forward is mainly useful for development/testing/debugging.
+- If the port-forward process stops, the forwarding stops.
+
+
+6. NEXT STEP: INGRESS
+---------------------
+
+After practicing Deployment and Service, I moved to Ingress.
+
+Ingress is used to manage HTTP/HTTPS routing into Kubernetes Services.
+
+Basic architecture:
+
+    Client
+       |
+       v
+    Ingress
+       |
+       v
+    Service
+       |
+       v
+    Pods
+
+Ingress can later be used for:
+- Host-based routing
+- Path-based routing
+- HTTP/HTTPS
+- TLS
+- Routing multiple applications through one entry point
+
+
+7. ENABLE NGINX INGRESS CONTROLLER IN MINIKUBE
+----------------------------------------------
+
+I enabled the Minikube Ingress addon:
+
+minikube addons enable ingress
+
+Output showed the addon was enabled and the NGINX Ingress Controller image
+was installed.
+
+Then I checked:
+
+kubectl get pods -n ingress-nginx
+
+Expected/observed:
+
+NAME                                        READY   STATUS
+ingress-nginx-admission-create-...          0/1     Completed
+ingress-nginx-admission-patch-...           0/1     Completed
+ingress-nginx-controller-...                1/1     Running
+
+The important part is:
+
+    ingress-nginx-controller   1/1   Running
+
+The admission-create and admission-patch Jobs being Completed is normal.
+
+
+8. CHECK INGRESS CLASS
+----------------------
+
+Command:
+
+kubectl get ingressclass
+
+Observed:
+
+NAME    CONTROLLER
+nginx   k8s.io/ingress-nginx
+
+This tells Kubernetes that an NGINX Ingress Controller is available.
+
+The Ingress resource can specify:
+
+    ingressClassName: nginx
+
+
+9. CREATE THE INGRESS RESOURCE
+------------------------------
+
+I created ingress.yml:
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: myapp-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: serv
+                port:
+                  number: 8080
+
+Apply it:
+
+kubectl apply -f ingress.yml
+
+Output:
+
+ingress.networking.k8s.io/myapp-ingress created
+
+Check it:
+
+kubectl get ingress
+
+Observed:
+
+NAME            CLASS   HOSTS   ADDRESS   PORTS
+myapp-ingress   nginx   *                 80
+
+The empty ADDRESS was not a problem in this Minikube-on-EC2 setup.
+The Ingress resource was created and the NGINX controller was running.
+
+
+10. WHAT THE INGRESS YAML MEANS
+--------------------------------
+
+apiVersion: networking.k8s.io/v1
+    Uses the current Kubernetes Ingress API.
+
+kind: Ingress
+    Creates an Ingress resource.
+
+metadata:
+  name: myapp-ingress
+    Name of the Ingress object.
+
+spec:
+  ingressClassName: nginx
+    Tells Kubernetes to use the NGINX Ingress Controller.
+
+rules:
+  - http:
+      paths:
+        - path: /
+          pathType: Prefix
+    Any HTTP request matching "/" is handled by this rule.
+
+backend:
+  service:
+    name: serv
+    port:
+      number: 8080
+
+    The Ingress sends matching traffic to:
+        Service "serv" on port 8080.
+
+So the complete routing is:
+
+    Client
+       |
+       v
+    NGINX Ingress Controller
+       |
+       v
+    myapp-ingress
+       |
+       v
+    Service "serv":8080
+       |
+       +-------------------+
+       |                   |
+       v                   v
+    Pod :8080           Pod :8080
+       |
+       v
+    Pod :8080
+
+
+11. CHECK THE INGRESS SERVICE
+-----------------------------
+
+Command:
+
+kubectl get svc -n ingress-nginx
+
+Observed:
+
+NAME                                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)
+ingress-nginx-controller             NodePort    10.109.4.203    <none>        80:32733/TCP,443:32625/TCP
+ingress-nginx-controller-admission   ClusterIP   10.106.61.111   <none>        443/TCP
+
+This is very important.
+
+Minikube automatically created the Ingress Controller Service as a NodePort.
+
+The mapping is:
+
+    Service HTTP port 80  -> NodePort 32733
+    Service HTTPS port 443 -> NodePort 32625
+
+I did NOT manually create NodePort 32733.
+
+Minikube's Ingress addon created it automatically.
+
+
+12. UNDERSTANDING 80:32733
+--------------------------
+
+This:
+
+    80:32733/TCP
+
+means:
+
+    Service port = 80
+    NodePort     = 32733
+
+So direct NodePort traffic can be:
+
+    Minikube IP :32733
+          |
+          v
+    Ingress Controller Service :80
+          |
+          v
+    NGINX Ingress Controller
+
+
+13. TESTING INGRESS DIRECTLY
+----------------------------
+
+I checked the Minikube IP:
+
+minikube ip
+
+It returned:
+
+    192.168.49.2
+
+Then I tested:
+
+curl http://192.168.49.2:32733
+
+This worked.
+
+That proved the following entire path was working:
+
+    Minikube IP:32733
+           |
+           v
+    Ingress Controller
+           |
+           v
+    myapp-ingress
+           |
+           v
+    Service "serv":8080
+           |
+           v
+    Spring Boot Pods:8080
+
+
+14. IMPORTANT DIFFERENCE: NODEPORT VS PORT-FORWARD
+---------------------------------------------------
+
+NodePort:
+
+    Minikube-IP:32733
+           |
+           v
+    Ingress Service :80
+           |
+           v
+    NGINX Ingress
+           |
+           v
+    Application Service
+           |
+           v
+    Pods
+
+Port-forward:
+
+    Local/EC2 port
+           |
+           v
+    kubectl port-forward
+           |
+           v
+    Kubernetes Service port
+           |
+           v
+    Pod/Service
+
+
+15. PORT-FORWARDING THE INGRESS CONTROLLER
+-------------------------------------------
+
+The correct command we discussed is:
+
+kubectl port-forward --address 0.0.0.0 \
+  -n ingress-nginx \
+  service/ingress-nginx-controller \
+  8080:80
+
+Or on one line:
+
+kubectl port-forward --address 0.0.0.0 -n ingress-nginx service/ingress-nginx-controller 8080:80
+
+This is CORRECT.
+
+Meaning:
+
+    EC2 :8080
+         |
+         v
+    kubectl port-forward
+         |
+         v
+    ingress-nginx-controller Service :80
+         |
+         v
+    NGINX Ingress Controller
+         |
+         v
+    myapp-ingress
+         |
+         v
+    serv :8080
+         |
+         v
+    Pods :8080
+
+
+16. WHY 32733 IS NOT USED IN THE PORT-FORWARD COMMAND
+------------------------------------------------------
+
+It is important not to confuse NodePort with Service port.
+
+The Ingress Controller Service has:
+
+    80:32733
+
+where:
+    80    = Service port
+    32733 = NodePort
+
+When using:
+
+kubectl port-forward service/ingress-nginx-controller 8080:80
+
+kubectl is forwarding to the SERVICE PORT 80.
+
+Therefore:
+
+    8080:80
+
+is correct.
+
+This is NOT:
+
+    8080:32733
+
+and it is NOT:
+
+    32733:8080
+
+
+17. EXAMPLE OF THE PORT-FORWARD COMMAND
+---------------------------------------
+
+Command:
+
+kubectl port-forward --address 0.0.0.0 -n ingress-nginx service/ingress-nginx-controller 8080:80
+
+Meaning:
+
+    Port on EC2/listening side = 8080
+    Port on Kubernetes Service  = 80
+
+Then:
+
+    EC2 Public IP:8080
+             |
+             v
+    kubectl port-forward
+             |
+             v
+    ingress-nginx-controller:80
+             |
+             v
+    NGINX Ingress
+             |
+             v
+    serv:8080
+             |
+             v
+    Pods
+
+
+18. WHY --ADDRESS 0.0.0.0 MATTERS
+----------------------------------
+
+Without:
+
+    --address 0.0.0.0
+
+kubectl port-forward generally listens only on localhost.
+
+With:
+
+    --address 0.0.0.0
+
+it listens on all interfaces.
+
+This was important in the EC2 setup because the EC2 instance needed to
+accept the incoming connection on the forwarded port.
+
+However, the EC2 Security Group must also allow the required TCP port.
+
+
+19. IP FORWARDING VS PORT FORWARDING
+------------------------------------
+
+These are different concepts.
+
+IP forwarding:
+
+    sudo sysctl -w net.ipv4.ip_forward=1
+
+This enables the Linux kernel to forward IP packets between interfaces.
+
+Port forwarding with kubectl:
+
+    kubectl port-forward ...
+
+This creates a specific application/network connection from a local
+listening port to a Kubernetes Pod or Service.
+
+For the Minikube Ingress setup we practiced, manual Linux IP forwarding
+was not required just to enable the Ingress addon.
+
+The important thing was:
+- Enable the NGINX Ingress Controller.
+- Create the Ingress resource.
+- Understand how the Ingress Controller Service is exposed.
+- Use the appropriate NodePort or kubectl port-forward for testing.
+
+
+20. USEFUL COMMANDS I PRACTICED
+-------------------------------
+
+Check Pods:
+
+kubectl get pods
+
+Check Pods with labels and IPs:
+
+kubectl get pods -l app=myapp -o wide
+
+Describe Service:
+
+kubectl describe service serv
+
+Check Service endpoints:
+
+kubectl get endpoints serv
+
+Check all Services:
+
+kubectl get svc
+
+Enable Minikube Ingress:
+
+minikube addons enable ingress
+
+Check Ingress Controller Pods:
+
+kubectl get pods -n ingress-nginx
+
+Check IngressClass:
+
+kubectl get ingressclass
+
+Apply Ingress:
+
+kubectl apply -f ingress.yml
+
+Check Ingress:
+
+kubectl get ingress
+
+Detailed Ingress information:
+
+kubectl describe ingress myapp-ingress
+
+Check Ingress Controller Service:
+
+kubectl get svc -n ingress-nginx
+
+Get Minikube IP:
+
+minikube ip
+
+Test Ingress NodePort:
+
+curl http://$(minikube ip):32733
+
+or:
+
+curl http://192.168.49.2:32733
+
+Port-forward application Service:
+
+kubectl port-forward --address 0.0.0.0 service/serv 30090:8080
+
+Port-forward Ingress Controller:
+
+kubectl port-forward --address 0.0.0.0 -n ingress-nginx service/ingress-nginx-controller 8080:80
+
+
+21. FINAL ARCHITECTURE I UNDERSTOOD
+------------------------------------
+
+My current setup is:
+
+    EC2 instance
+       |
+       v
+    Minikube
+       |
+       +-----------------------------+
+       |                             |
+       v                             v
+    Ingress Controller             Application
+       |                             |
+       |                             v
+       |                         Deployment
+       |                             |
+       |                       3 Spring Boot Pods
+       |                         :8080 each
+       |
+       v
+    myapp-ingress
+       |
+       v
+    Service "serv"
+       |
+       v
+    3 Pods
+
+
+Ingress-specific traffic:
+
+    Client
+       |
+       v
+    Ingress entry point
+       |
+       v
+    NGINX Ingress Controller
+       |
+       v
+    Ingress rule
+       |
+       v
+    Service "serv":8080
+       |
+       v
+    One of the application Pods
+
+
+22. WHAT I HAVE SUCCESSFULLY PRACTICED
+--------------------------------------
+
+[YES] Deployment with 3 replicas
+[YES] Pod labels and selectors
+[YES] Service
+[YES] ClusterIP concept
+[YES] NodePort
+[YES] Service port vs targetPort vs nodePort
+[YES] Service endpoints
+[YES] kubectl describe service
+[YES] kubectl port-forward
+[YES] Minikube
+[YES] NGINX Ingress Controller
+[YES] IngressClass
+[YES] Ingress resource
+[YES] Ingress YAML
+[YES] Ingress -> Service routing
+[YES] Ingress Controller NodePort
+[YES] Testing Ingress with curl
+[YES] Understanding 80:32733
+[YES] Understanding why port-forward uses 8080:80
+[YES] Understanding --address 0.0.0.0
+[YES] Understanding that 32733 was automatically created by Minikube
+
+
+23. NEXT TOPICS TO PRACTICE
+---------------------------
+
+The next useful Ingress exercises are:
+
+1. Path-based routing
+
+    /app1 -> service1
+    /app2 -> service2
+
+2. Host-based routing
+
+    app1.example.com -> service1
+    app2.example.com -> service2
+
+3. Multiple Services behind one Ingress
+
+4. TLS / HTTPS
+
+5. ConfigMap
+
+6. Secret
+
+7. Persistent Volumes
+
+8. Health checks and readiness probes
+
+9. Rolling updates and rollback
+
+10. Horizontal Pod Autoscaler
+
+11. Helm
+
+12. Move the same architecture from Minikube to Amazon EKS
+
+13. AWS Load Balancer Controller
+
+14. Production-style Ingress with AWS Load Balancer and HTTPS
+
+
+24. KEY THINGS TO REMEMBER
+--------------------------
+
+1. Deployment creates/manages Pods.
+
+2. Service provides stable networking to Pods.
+
+3. Service selector connects the Service to Pods through labels.
+
+4. targetPort is the Pod/application port.
+
+5. nodePort exposes a Service through a port on the Kubernetes node.
+
+6. Ingress is an HTTP/HTTPS routing layer.
+
+7. An Ingress resource by itself does not process traffic.
+   An Ingress Controller must be installed.
+
+8. Minikube's ingress addon installed the NGINX Ingress Controller.
+
+9. Minikube automatically created the Ingress Controller NodePort:
+       HTTP 80 -> 32733
+       HTTPS 443 -> 32625
+
+10. kubectl port-forward to a Service uses the Service port, not its
+    NodePort.
+
+11. Therefore this is correct:
+
+    kubectl port-forward --address 0.0.0.0 \
+      -n ingress-nginx \
+      service/ingress-nginx-controller \
+      8080:80
+
+12. This direct Ingress test worked:
+
+    curl http://192.168.49.2:32733
+
+13. The current working Kubernetes application flow is:
+
+    Ingress
+       ->
+    Service
+       ->
+    Deployment-managed Pods
+
+
+END OF NOTES
+
+
+                   INTERNET
+                      |
+                      v
+                EC2 Public IP
+                      |
+                      v
+              Port 8080
+                      |
+                      v
+             kubectl port-forward
+                      |
+                      v
+          NGINX Ingress Controller
+                  :80
+                      |
+                      v
+              myapp-ingress
+                  /login
+                      |
+                      v
+                Service "serv"
+                  :8080
+                      |
+          +-----------+-----------+
+          |           |           |
+          v           v           v
+        Pod 1       Pod 2       Pod 3
+        :8080       :8080       :8080
+============

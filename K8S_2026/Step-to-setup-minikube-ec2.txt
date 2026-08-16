@@ -1,0 +1,67 @@
+install docker 
+
+sudo usermod -aG docker $USER
+
+
+5. Install Minikube
+
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+rm -f minikube-linux-amd64
+
+minikube version
+
+minikube config set driver docker
+
+minikube start --driver=docker --cpus=2 --memory=4096
+
+
+
+kubectl install:
+
+
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+rm -f kubectl
+
+
+creating tunnal:
+
+kubectl port-forward --address 0.0.0.0 service/serv 30090:8080
+
+
+you're telling kubectl:
+
+"Listen on port 30080 on the EC2 machine, and forward whatever arrives there to port 8080 of the Kubernetes Service.( service.yml)"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+1. Pods                         ✅
+2. Deployment                  ✅
+3. Service                     ✅
+4. NodePort                    ✅
+5. kubectl port-forward        ✅
+6. Ingress                     ← NEXT
+7. ConfigMap
+8. Secret
+9. Volumes / PersistentVolume
+10. HPA (autoscaling)
+11. Rolling updates / rollback
+12. Helm
+13. EKS
+14. AWS Load Balancer Controller
+15. Production-style Kubernetes deployment
