@@ -68,9 +68,9 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -t ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project_v1:v1 .
+            -t ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project_v2:v1 .
 
       - name: Push Docker image
         run: |
           docker push \
-            ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project_v1:v1
+            ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project_v2:v1
