@@ -33,7 +33,10 @@ jobs:
           distribution: 'temurin'
 
       - name: build jar
-        run: mvn clean install 
+        run: ./mvnw clean install 
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
+        with:
+          name: spring-boot.jar
+          path: /target/*.jar
