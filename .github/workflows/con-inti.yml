@@ -6,7 +6,7 @@ on:
 
 jobs:
   build:
-    run-on: ubuntu:latest
+    runs-on: ubuntu:latest
 
     services:
       mysql:
@@ -25,18 +25,12 @@ jobs:
     steps:
       - name: copy code
         uses: actions/checkout@v4
-
       - name: setup java
         uses: actions/setup-java@v4
-        with:
-          java-version: '8'
-          distribution: 'temurin'
-
       - name: build jar
         run: mvn clean install
         with:
           java-version: '8'
           destribution: 'tumrin'
-
       - name: upload artifact
         uses: actions/upload-artifact@v4
