@@ -78,3 +78,25 @@ jobs:
 
       - name: push image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:${{ github.run_number }}
+
+  update-manifest:
+    needs: docker
+    if: success()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Update image in deployment
+        run: |
+          sed -i "s|image: .*|image: ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:${{ github.run_number }}|" k8s/manifest/deploy.yml
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+          git add k8s/manifest/deploy.yml
+          git commit -m "Update image to build ${{ github.run_number }} [skip ci]"
+          git push
