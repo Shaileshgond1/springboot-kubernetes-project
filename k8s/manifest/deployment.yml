@@ -16,4 +16,4 @@ spec:
     spec:
       containers:
         - name: con1
-          image: sw1236/springboot-kubernetes-project:31
+          image: sw1236/springboot-kubernetes-project:34
