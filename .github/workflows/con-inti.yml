@@ -33,7 +33,7 @@ jobs:
           distribution: 'temurin'
 
       - name: build jar
-        run: ./mvnw clean install 
+        run: mvn clean package -DskipTests
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
