@@ -30,7 +30,7 @@ jobs:
         uses: actions/setup-java@v5
         with:
           java-version: '8'
-          destribution: 'tumrin'
+          distribution: 'temurin'
 
       - name: build jar
         run: mvn clean install 
