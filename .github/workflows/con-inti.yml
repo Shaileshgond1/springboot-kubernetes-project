@@ -7,15 +7,30 @@ on:
 jobs:
   build:
     run-on: ubuntu:latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: vetapp
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
     steps:
       - name: copy code
-        use: actions/checkout@v4
+        uses: actions/checkout@v4
       - name: setup java
-        use: actions/setup-java@v4
+        uses: actions/setup-java@v4
       - name: build jar
         run: mvn clean install
         with:
           java-version: '8'
           destribution: 'tumrin'
       - name: upload artifact
-        use: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v4
