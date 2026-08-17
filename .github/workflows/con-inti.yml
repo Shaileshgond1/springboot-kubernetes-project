@@ -33,7 +33,7 @@ jobs:
           destribution: 'tumrin'
 
       - name: build jar
-        run: mvn clean install
+        run: mvn clean install 
 
       - name: upload artifact
         uses: actions/upload-artifact@v4
