@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: project-deployment
+  name: mydeploy
   namespace: dev
 spec:
-  replicas: 6
+  replicas: 3
   selector:
     matchLabels:
-      app: test
+      city: pune
   template:
     metadata:
-      name: testEnv-Pod
+      name: mycon
       labels:
-        app: test
+        city: pune
     spec:
       containers:
-        - name: container
+        - name: con1
           image: sw1236/springboot-kubernetes-project_v4:v4
