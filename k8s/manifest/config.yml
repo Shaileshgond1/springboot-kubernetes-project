@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: configname
+data:
+  APP_ENV: "dev"
+  APP_PORT: "8080"
