@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: con1
-          image: sw1236/springboot-kubernetes-project:40
+          image: sw1236/springboot-kubernetes-project:41
           envFrom:
             - configMapRef:
                 name: configname
