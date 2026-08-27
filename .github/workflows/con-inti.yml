@@ -95,14 +95,14 @@ jobs:
 
       - name: Update image in deployment
         run: |
-          sed -i "s|image: .*|image: ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:${{ github.run_number }}|" k8s/manifest/app.yml
+          sed -i "s|image: .*|image: ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:${{ github.run_number }}|" k8s/manifest/app.yaml
 
       - name: Commit and push changes
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-          git add k8s/manifest/app.yml
+          git add k8s/manifest/app.yaml
           git commit -m "Update image to build ${{ github.run_number }} [skip ci]"
           git push
 
