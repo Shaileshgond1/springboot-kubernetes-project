@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+  namespace: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: app
+  template:
+    metadata:
+      labels:
+        name: app
+    spec:
+      containers:
+         - name: con1
+           image: sw1236/springboot-kubernetes-project:50

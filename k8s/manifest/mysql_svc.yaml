@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysqlsvc
+  namespace: application
+spec:
+  type: NodePort
+  selector:
+    name: mysqlpod
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30000

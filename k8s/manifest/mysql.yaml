@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysqlpod
+  namespace: application
+
+spec:
+  serviceName: mysql-service
+  replicas: 1
+
+  selector:
+    matchLabels:
+      name: mysqlpod
+
+  template:
+    metadata:
+      labels:
+        name: mysqlpod
+
+    spec:
+      containers:
+        - name: mycon
+          image: mysql:8
+
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: config
+                  key: MYSQL_DATABASE
+
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MYSQL_USER
+
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MYSQL_PASSWORD
+
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: secret
+                  key: MYSQL_ROOT_PASSWORD
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "500Mi"
+            limits:
+              cpu: "200m"
+              memory: "1000Mi"
+
+          volumeMounts:
+            - name: mysql-storage
+              mountPath: /var/lib/mysql
+
+      volumes:
+        - name: mysql-storage
+          persistentVolumeClaim:
+            claimName: mysqlpvc
