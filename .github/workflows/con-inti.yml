@@ -83,17 +83,6 @@ jobs:
       - name: push image
         run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:${{ github.run_number }}
 
-      # 2. Configure AWS using GitHub OIDC
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v5
-        with:
-          role-to-assume: arn:aws:iam::070014501756:role/githubaction
-          aws-region: ca-central-1
-      
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
 
       # 4. Build Docker image
       - name: Build Docker image
