@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
               .antMatchers("/suppliers/**").hasAnyRole("ADMIN", "SUPERADMIN")
               .antMatchers("/lab/**").permitAll()
-
+              .antMatchers("/actuator/prometheus").permitAll()
 
               .antMatchers("/").permitAll()
               .anyRequest().authenticated()
