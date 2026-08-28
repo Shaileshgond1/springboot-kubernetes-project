@@ -16,7 +16,7 @@ spec:
       containers:
          - name: con1
 <<<<<<< HEAD
-           image: sw1236/springboot-kubernetes-projectt:50
+           image: sw1236/springboot-kubernetes-project:55
 =======
-           image: sw1236/springboot-kubernetes-project:54
+           image: sw1236/springboot-kubernetes-project:55
 >>>>>>> d4e602d6d6cbcd75932dfde07bb0650f91fccb1e
