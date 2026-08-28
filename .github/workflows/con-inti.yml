@@ -95,7 +95,7 @@ jobs:
 
       - name: Update image in deployment
         run: |
-          sed -i "s|image: .*|image: ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-project:${{ github.run_number }}|" k8s/manifest/app.yaml
+          sed -i "s|image: .*|image: ${{ secrets.DOCKERHUB_USERNAME }}/springboot-kubernetes-projectt:${{ github.run_number }}|" k8s/manifest/app.yaml
 
       - name: Commit and push changes
         run: |
