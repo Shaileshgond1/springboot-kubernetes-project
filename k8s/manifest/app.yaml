@@ -19,10 +19,10 @@ spec:
     spec:
       containers:
         - name: con1
-          image: sw1236/springboot-kubernetes-project:68
+          image: sw1236/springboot-kubernetes-project:69
 
          - name: con1
-           image: sw1236/springboot-kubernetes-project:68
+           image: sw1236/springboot-kubernetes-project:69
 
           readinessProbe:
             httpGet:
