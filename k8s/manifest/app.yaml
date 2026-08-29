@@ -21,9 +21,6 @@ spec:
         - name: con1
           image: sw1236/springboot-kubernetes-project:68
 
-         - name: con1
-           image: sw1236/springboot-kubernetes-project:68
-
           readinessProbe:
             httpGet:
               path: /actuator/health
