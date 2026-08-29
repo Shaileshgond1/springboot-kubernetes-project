@@ -1,5 +1,4 @@
 1. Enable Ingress in Minikube
-
 On your EC2:
 
 minikube addons enable ingress
