@@ -3,11 +3,14 @@ kind: Service
 metadata:
   name: appsvc
   namespace: application
+  labels:
+    app: application
 spec:
   type: NodePort
   selector:
     name: app
   ports:
-    - port: 90
+    - name: http
+      port: 90
       targetPort: 8080
       nodePort: 30002
