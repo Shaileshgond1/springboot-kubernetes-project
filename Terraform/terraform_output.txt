@@ -1,0 +1,1135 @@
+Microsoft Windows [Version 10.0.26200.9168]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Terraform_Project>terraform plan
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the
+following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_db_instance.project_mysql will be created
+  + resource "aws_db_instance" "project_mysql" {
+      + address                               = (known after apply)
+      + allocated_storage                     = 30
+      + apply_immediately                     = false
+      + arn                                   = (known after apply)
+      + auto_minor_version_upgrade            = true
+      + availability_zone                     = (known after apply)
+      + backup_retention_period               = (known after apply)
+      + backup_target                         = (known after apply)
+      + backup_window                         = (known after apply)
+      + ca_cert_identifier                    = (known after apply)
+      + character_set_name                    = (known after apply)
+      + copy_tags_to_snapshot                 = false
+      + database_insights_mode                = (known after apply)
+      + db_name                               = "vetapp"
+      + db_subnet_group_name                  = "project-mysql-subnet-group"
+      + dedicated_log_volume                  = false
+      + delete_automated_backups              = true
+      + domain_fqdn                           = (known after apply)
+      + endpoint                              = (known after apply)
+      + engine                                = "mysql"
+      + engine_lifecycle_support              = (known after apply)
+      + engine_version                        = "8.0"
+      + engine_version_actual                 = (known after apply)
+      + hosted_zone_id                        = (known after apply)
+      + id                                    = (known after apply)
+      + identifier                            = "project-mysql"
+      + identifier_prefix                     = (known after apply)
+      + instance_class                        = "db.t3.micro"
+      + iops                                  = (known after apply)
+      + kms_key_id                            = (known after apply)
+      + latest_restorable_time                = (known after apply)
+      + license_model                         = (known after apply)
+      + listener_endpoint                     = (known after apply)
+      + maintenance_window                    = (known after apply)
+      + master_user_secret                    = (known after apply)
+      + master_user_secret_kms_key_id         = (known after apply)
+      + monitoring_interval                   = 0
+      + monitoring_role_arn                   = (known after apply)
+      + multi_az                              = (known after apply)
+      + nchar_character_set_name              = (known after apply)
+      + network_type                          = (known after apply)
+      + option_group_name                     = (known after apply)
+      + parameter_group_name                  = (known after apply)
+      + password                              = (sensitive value)
+      + password_wo                           = (write-only attribute)
+      + performance_insights_enabled          = false
+      + performance_insights_kms_key_id       = (known after apply)
+      + performance_insights_retention_period = (known after apply)
+      + port                                  = (known after apply)
+      + publicly_accessible                   = false
+      + region                                = "ca-central-1"
+      + replica_mode                          = (known after apply)
+      + replicas                              = (known after apply)
+      + resource_id                           = (known after apply)
+      + skip_final_snapshot                   = true
+      + snapshot_identifier                   = (known after apply)
+      + status                                = (known after apply)
+      + storage_throughput                    = (known after apply)
+      + storage_type                          = "gp3"
+      + tags                                  = {
+          + "Name" = "Project-MySQL"
+        }
+      + tags_all                              = {
+          + "Name" = "Project-MySQL"
+        }
+      + timezone                              = (known after apply)
+      + upgrade_rollout_order                 = (known after apply)
+      + username                              = "admin"
+      + vpc_security_group_ids                = (known after apply)
+    }
+
+  # aws_db_subnet_group.mysql_subnet_group will be created
+  + resource "aws_db_subnet_group" "mysql_subnet_group" {
+      + arn                     = (known after apply)
+      + description             = "Managed by Terraform"
+      + id                      = (known after apply)
+      + name                    = "project-mysql-subnet-group"
+      + name_prefix             = (known after apply)
+      + region                  = "ca-central-1"
+      + subnet_ids              = (known after apply)
+      + supported_network_types = (known after apply)
+      + tags                    = {
+          + "Name" = "Project-MySQL-Subnet-Group"
+        }
+      + tags_all                = {
+          + "Name" = "Project-MySQL-Subnet-Group"
+        }
+      + vpc_id                  = (known after apply)
+    }
+
+  # aws_instance.project_ec2 will be created
+  + resource "aws_instance" "project_ec2" {
+      + ami                                  = "ami-0a3c92dc3feace73f"
+      + arn                                  = (known after apply)
+      + associate_public_ip_address          = true
+      + availability_zone                    = (known after apply)
+      + disable_api_stop                     = (known after apply)
+      + disable_api_termination              = (known after apply)
+      + ebs_optimized                        = (known after apply)
+      + enable_primary_ipv6                  = (known after apply)
+      + force_destroy                        = false
+      + get_password_data                    = false
+      + host_id                              = (known after apply)
+      + host_resource_group_arn              = (known after apply)
+      + iam_instance_profile                 = (known after apply)
+      + id                                   = (known after apply)
+      + instance_initiated_shutdown_behavior = (known after apply)
+      + instance_lifecycle                   = (known after apply)
+      + instance_state                       = (known after apply)
+      + instance_type                        = "m7i-flex.large"
+      + ipv6_address_count                   = (known after apply)
+      + ipv6_addresses                       = (known after apply)
+      + key_name                             = (known after apply)
+      + monitoring                           = (known after apply)
+      + outpost_arn                          = (known after apply)
+      + password_data                        = (known after apply)
+      + placement_group                      = (known after apply)
+      + placement_group_id                   = (known after apply)
+      + placement_partition_number           = (known after apply)
+      + primary_network_interface_id         = (known after apply)
+      + private_dns                          = (known after apply)
+      + private_ip                           = (known after apply)
+      + public_dns                           = (known after apply)
+      + public_ip                            = (known after apply)
+      + region                               = "ca-central-1"
+      + secondary_private_ips                = (known after apply)
+      + security_groups                      = (known after apply)
+      + source_dest_check                    = true
+      + spot_instance_request_id             = (known after apply)
+      + subnet_id                            = (known after apply)
+      + tags                                 = {
+          + "Name" = "minikube"
+        }
+      + tags_all                             = {
+          + "Name" = "minikube"
+        }
+      + tenancy                              = (known after apply)
+      + user_data_base64                     = (known after apply)
+      + user_data_replace_on_change          = false
+      + vpc_security_group_ids               = (known after apply)
+
+      + capacity_reservation_specification (known after apply)
+
+      + cpu_options (known after apply)
+
+      + ebs_block_device (known after apply)
+
+      + enclave_options (known after apply)
+
+      + ephemeral_block_device (known after apply)
+
+      + instance_market_options (known after apply)
+
+      + maintenance_options (known after apply)
+
+      + metadata_options (known after apply)
+
+      + network_interface (known after apply)
+
+      + primary_network_interface (known after apply)
+
+      + private_dns_name_options (known after apply)
+
+      + root_block_device {
+          + delete_on_termination = true
+          + device_name           = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + kms_key_id            = (known after apply)
+          + tags_all              = (known after apply)
+          + throughput            = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = 30
+          + volume_type           = "gp3"
+        }
+
+      + secondary_network_interface (known after apply)
+    }
+
+  # aws_internet_gateway.igw will be created
+  + resource "aws_internet_gateway" "igw" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + region   = "ca-central-1"
+      + tags     = {
+          + "Name" = "project-igw"
+        }
+      + tags_all = {
+          + "Name" = "project-igw"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # aws_route_table.pri_route_table will be created
+  + resource "aws_route_table" "pri_route_table" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ca-central-1"
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "private_RT"
+        }
+      + tags_all         = {
+          + "Name" = "private_RT"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table.pri_route_table0 will be created
+  + resource "aws_route_table" "pri_route_table0" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ca-central-1"
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "private_RT0"
+        }
+      + tags_all         = {
+          + "Name" = "private_RT0"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table.pub_route_table will be created
+  + resource "aws_route_table" "pub_route_table" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ca-central-1"
+      + route            = [
+          + {
+              + cidr_block                 = "0.0.0.0/0"
+              + gateway_id                 = (known after apply)
+                # (12 unchanged attributes hidden)
+            },
+        ]
+      + tags             = {
+          + "Name" = "public_RT"
+        }
+      + tags_all         = {
+          + "Name" = "public_RT"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table_association.private_assoc will be created
+  + resource "aws_route_table_association" "private_assoc" {
+      + id             = (known after apply)
+      + region         = "ca-central-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # aws_route_table_association.private_assoc0 will be created
+  + resource "aws_route_table_association" "private_assoc0" {
+      + id             = (known after apply)
+      + region         = "ca-central-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # aws_route_table_association.public_assoc will be created
+  + resource "aws_route_table_association" "public_assoc" {
+      + id             = (known after apply)
+      + region         = "ca-central-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # aws_security_group.Project_ec2_SG will be created
+  + resource "aws_security_group" "Project_ec2_SG" {
+      + arn                    = (known after apply)
+      + description            = "Managed by Terraform"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 22
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 22
+                # (1 unchanged attribute hidden)
+            },
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 3306
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 3306
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + name                   = (known after apply)
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ca-central-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "Project_ec2_SG"
+        }
+      + tags_all               = {
+          + "Name" = "Project_ec2_SG"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_security_group.Project_rds_SG will be created
+  + resource "aws_security_group" "Project_rds_SG" {
+      + arn                    = (known after apply)
+      + description            = "Managed by Terraform"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = []
+              + from_port        = 3306
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = (known after apply)
+              + self             = false
+              + to_port          = 3306
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + name                   = "project-rds-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ca-central-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "Project_RDS_SG"
+        }
+      + tags_all               = {
+          + "Name" = "Project_RDS_SG"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_subnet.private_sub will be created
+  + resource "aws_subnet" "private_sub" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ca-central-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.2.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ca-central-1"
+      + tags                                           = {
+          + "Name" = "private_subnet"
+        }
+      + tags_all                                       = {
+          + "Name" = "private_subnet"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # aws_subnet.private_sub0 will be created
+  + resource "aws_subnet" "private_sub0" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ca-central-1d"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.3.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ca-central-1"
+      + tags                                           = {
+          + "Name" = "private_subnet0"
+        }
+      + tags_all                                       = {
+          + "Name" = "private_subnet0"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # aws_subnet.public_sub will be created
+  + resource "aws_subnet" "public_sub" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ca-central-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.1.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ca-central-1"
+      + tags                                           = {
+          + "Name" = "public_subnet"
+        }
+      + tags_all                                       = {
+          + "Name" = "public_subnet"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # aws_vpc.fvpc will be created
+  + resource "aws_vpc" "fvpc" {
+      + arn                                  = (known after apply)
+      + cidr_block                           = "10.0.0.0/16"
+      + default_network_acl_id               = (known after apply)
+      + default_route_table_id               = (known after apply)
+      + default_security_group_id            = (known after apply)
+      + dhcp_options_id                      = (known after apply)
+      + enable_dns_hostnames                 = (known after apply)
+      + enable_dns_support                   = true
+      + enable_network_address_usage_metrics = (known after apply)
+      + id                                   = (known after apply)
+      + instance_tenancy                     = "default"
+      + ipv6_association_id                  = (known after apply)
+      + ipv6_cidr_block                      = (known after apply)
+      + ipv6_cidr_block_network_border_group = (known after apply)
+      + main_route_table_id                  = (known after apply)
+      + owner_id                             = (known after apply)
+      + region                               = "ca-central-1"
+      + tags                                 = {
+          + "Name" = "project_vpc"
+        }
+      + tags_all                             = {
+          + "Name" = "project_vpc"
+        }
+    }
+
+Plan: 16 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + EC2_Instance_ID          = (known after apply)
+  + EC2_SG                   = (known after apply)
+  + RDS_MYSQL_Security_Group = (known after apply)
+  + igw                      = (known after apply)
+  + priave_subnet_id         = (known after apply)
+  + private_route_table      = (known after apply)
+  + public_route_table       = (known after apply)
+  + public_subnet_id         = (known after apply)
+  + rds_database_name        = "vetapp"
+  + rds_endpoint             = (known after apply)
+  + rds_instance_id          = (known after apply)
+  + rds_port                 = (known after apply)
+  + vpcid                    = (known after apply)
+
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't guarantee to take exactly these actions if
+you run "terraform apply" now.
+
+C:\Terraform_Project>terraform apply
+
+Terraform used the selected providers to generate the following execution plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # aws_db_instance.project_mysql will be created
+  + resource "aws_db_instance" "project_mysql" {
+      + address                               = (known after apply)
+      + allocated_storage                     = 30
+      + apply_immediately                     = false
+      + arn                                   = (known after apply)
+      + auto_minor_version_upgrade            = true
+      + availability_zone                     = (known after apply)
+      + backup_retention_period               = (known after apply)
+      + backup_target                         = (known after apply)
+      + backup_window                         = (known after apply)
+      + ca_cert_identifier                    = (known after apply)
+      + character_set_name                    = (known after apply)
+      + copy_tags_to_snapshot                 = false
+      + database_insights_mode                = (known after apply)
+      + db_name                               = "vetapp"
+      + db_subnet_group_name                  = "project-mysql-subnet-group"
+      + dedicated_log_volume                  = false
+      + delete_automated_backups              = true
+      + domain_fqdn                           = (known after apply)
+      + endpoint                              = (known after apply)
+      + engine                                = "mysql"
+      + engine_lifecycle_support              = (known after apply)
+      + engine_version                        = "8.0"
+      + engine_version_actual                 = (known after apply)
+      + hosted_zone_id                        = (known after apply)
+      + id                                    = (known after apply)
+      + identifier                            = "project-mysql"
+      + identifier_prefix                     = (known after apply)
+      + instance_class                        = "db.t3.micro"
+      + iops                                  = (known after apply)
+      + kms_key_id                            = (known after apply)
+      + latest_restorable_time                = (known after apply)
+      + license_model                         = (known after apply)
+      + listener_endpoint                     = (known after apply)
+      + maintenance_window                    = (known after apply)
+      + master_user_secret                    = (known after apply)
+      + master_user_secret_kms_key_id         = (known after apply)
+      + monitoring_interval                   = 0
+      + monitoring_role_arn                   = (known after apply)
+      + multi_az                              = (known after apply)
+      + nchar_character_set_name              = (known after apply)
+      + network_type                          = (known after apply)
+      + option_group_name                     = (known after apply)
+      + parameter_group_name                  = (known after apply)
+      + password                              = (sensitive value)
+      + password_wo                           = (write-only attribute)
+      + performance_insights_enabled          = false
+      + performance_insights_kms_key_id       = (known after apply)
+      + performance_insights_retention_period = (known after apply)
+      + port                                  = (known after apply)
+      + publicly_accessible                   = false
+      + region                                = "ca-central-1"
+      + replica_mode                          = (known after apply)
+      + replicas                              = (known after apply)
+      + resource_id                           = (known after apply)
+      + skip_final_snapshot                   = true
+      + snapshot_identifier                   = (known after apply)
+      + status                                = (known after apply)
+      + storage_throughput                    = (known after apply)
+      + storage_type                          = "gp3"
+      + tags                                  = {
+          + "Name" = "Project-MySQL"
+        }
+      + tags_all                              = {
+          + "Name" = "Project-MySQL"
+        }
+      + timezone                              = (known after apply)
+      + upgrade_rollout_order                 = (known after apply)
+      + username                              = "admin"
+      + vpc_security_group_ids                = (known after apply)
+    }
+
+  # aws_db_subnet_group.mysql_subnet_group will be created
+  + resource "aws_db_subnet_group" "mysql_subnet_group" {
+      + arn                     = (known after apply)
+      + description             = "Managed by Terraform"
+      + id                      = (known after apply)
+      + name                    = "project-mysql-subnet-group"
+      + name_prefix             = (known after apply)
+      + region                  = "ca-central-1"
+      + subnet_ids              = (known after apply)
+      + supported_network_types = (known after apply)
+      + tags                    = {
+          + "Name" = "Project-MySQL-Subnet-Group"
+        }
+      + tags_all                = {
+          + "Name" = "Project-MySQL-Subnet-Group"
+        }
+      + vpc_id                  = (known after apply)
+    }
+
+  # aws_instance.project_ec2 will be created
+  + resource "aws_instance" "project_ec2" {
+      + ami                                  = "ami-0a3c92dc3feace73f"
+      + arn                                  = (known after apply)
+      + associate_public_ip_address          = true
+      + availability_zone                    = (known after apply)
+      + disable_api_stop                     = (known after apply)
+      + disable_api_termination              = (known after apply)
+      + ebs_optimized                        = (known after apply)
+      + enable_primary_ipv6                  = (known after apply)
+      + force_destroy                        = false
+      + get_password_data                    = false
+      + host_id                              = (known after apply)
+      + host_resource_group_arn              = (known after apply)
+      + iam_instance_profile                 = (known after apply)
+      + id                                   = (known after apply)
+      + instance_initiated_shutdown_behavior = (known after apply)
+      + instance_lifecycle                   = (known after apply)
+      + instance_state                       = (known after apply)
+      + instance_type                        = "m7i-flex.large"
+      + ipv6_address_count                   = (known after apply)
+      + ipv6_addresses                       = (known after apply)
+      + key_name                             = (known after apply)
+      + monitoring                           = (known after apply)
+      + outpost_arn                          = (known after apply)
+      + password_data                        = (known after apply)
+      + placement_group                      = (known after apply)
+      + placement_group_id                   = (known after apply)
+      + placement_partition_number           = (known after apply)
+      + primary_network_interface_id         = (known after apply)
+      + private_dns                          = (known after apply)
+      + private_ip                           = (known after apply)
+      + public_dns                           = (known after apply)
+      + public_ip                            = (known after apply)
+      + region                               = "ca-central-1"
+      + secondary_private_ips                = (known after apply)
+      + security_groups                      = (known after apply)
+      + source_dest_check                    = true
+      + spot_instance_request_id             = (known after apply)
+      + subnet_id                            = (known after apply)
+      + tags                                 = {
+          + "Name" = "minikube"
+        }
+      + tags_all                             = {
+          + "Name" = "minikube"
+        }
+      + tenancy                              = (known after apply)
+      + user_data_base64                     = (known after apply)
+      + user_data_replace_on_change          = false
+      + vpc_security_group_ids               = (known after apply)
+
+      + capacity_reservation_specification (known after apply)
+
+      + cpu_options (known after apply)
+
+      + ebs_block_device (known after apply)
+
+      + enclave_options (known after apply)
+
+      + ephemeral_block_device (known after apply)
+
+      + instance_market_options (known after apply)
+
+      + maintenance_options (known after apply)
+
+      + metadata_options (known after apply)
+
+      + network_interface (known after apply)
+
+      + primary_network_interface (known after apply)
+
+      + private_dns_name_options (known after apply)
+
+      + root_block_device {
+          + delete_on_termination = true
+          + device_name           = (known after apply)
+          + encrypted             = (known after apply)
+          + iops                  = (known after apply)
+          + kms_key_id            = (known after apply)
+          + tags_all              = (known after apply)
+          + throughput            = (known after apply)
+          + volume_id             = (known after apply)
+          + volume_size           = 30
+          + volume_type           = "gp3"
+        }
+
+      + secondary_network_interface (known after apply)
+    }
+
+  # aws_internet_gateway.igw will be created
+  + resource "aws_internet_gateway" "igw" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + region   = "ca-central-1"
+      + tags     = {
+          + "Name" = "project-igw"
+        }
+      + tags_all = {
+          + "Name" = "project-igw"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # aws_route_table.pri_route_table will be created
+  + resource "aws_route_table" "pri_route_table" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ca-central-1"
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "private_RT"
+        }
+      + tags_all         = {
+          + "Name" = "private_RT"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table.pri_route_table0 will be created
+  + resource "aws_route_table" "pri_route_table0" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ca-central-1"
+      + route            = (known after apply)
+      + tags             = {
+          + "Name" = "private_RT0"
+        }
+      + tags_all         = {
+          + "Name" = "private_RT0"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table.pub_route_table will be created
+  + resource "aws_route_table" "pub_route_table" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ca-central-1"
+      + route            = [
+          + {
+              + cidr_block                 = "0.0.0.0/0"
+              + gateway_id                 = (known after apply)
+                # (12 unchanged attributes hidden)
+            },
+        ]
+      + tags             = {
+          + "Name" = "public_RT"
+        }
+      + tags_all         = {
+          + "Name" = "public_RT"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # aws_route_table_association.private_assoc will be created
+  + resource "aws_route_table_association" "private_assoc" {
+      + id             = (known after apply)
+      + region         = "ca-central-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # aws_route_table_association.private_assoc0 will be created
+  + resource "aws_route_table_association" "private_assoc0" {
+      + id             = (known after apply)
+      + region         = "ca-central-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # aws_route_table_association.public_assoc will be created
+  + resource "aws_route_table_association" "public_assoc" {
+      + id             = (known after apply)
+      + region         = "ca-central-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # aws_security_group.Project_ec2_SG will be created
+  + resource "aws_security_group" "Project_ec2_SG" {
+      + arn                    = (known after apply)
+      + description            = "Managed by Terraform"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 22
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 22
+                # (1 unchanged attribute hidden)
+            },
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 3306
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 3306
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + name                   = (known after apply)
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ca-central-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "Project_ec2_SG"
+        }
+      + tags_all               = {
+          + "Name" = "Project_ec2_SG"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_security_group.Project_rds_SG will be created
+  + resource "aws_security_group" "Project_rds_SG" {
+      + arn                    = (known after apply)
+      + description            = "Managed by Terraform"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = []
+              + from_port        = 3306
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = (known after apply)
+              + self             = false
+              + to_port          = 3306
+                # (1 unchanged attribute hidden)
+            },
+        ]
+      + name                   = "project-rds-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ca-central-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "Name" = "Project_RDS_SG"
+        }
+      + tags_all               = {
+          + "Name" = "Project_RDS_SG"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # aws_subnet.private_sub will be created
+  + resource "aws_subnet" "private_sub" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ca-central-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.2.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ca-central-1"
+      + tags                                           = {
+          + "Name" = "private_subnet"
+        }
+      + tags_all                                       = {
+          + "Name" = "private_subnet"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # aws_subnet.private_sub0 will be created
+  + resource "aws_subnet" "private_sub0" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ca-central-1d"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.3.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ca-central-1"
+      + tags                                           = {
+          + "Name" = "private_subnet0"
+        }
+      + tags_all                                       = {
+          + "Name" = "private_subnet0"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # aws_subnet.public_sub will be created
+  + resource "aws_subnet" "public_sub" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ca-central-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.1.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ca-central-1"
+      + tags                                           = {
+          + "Name" = "public_subnet"
+        }
+      + tags_all                                       = {
+          + "Name" = "public_subnet"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # aws_vpc.fvpc will be created
+  + resource "aws_vpc" "fvpc" {
+      + arn                                  = (known after apply)
+      + cidr_block                           = "10.0.0.0/16"
+      + default_network_acl_id               = (known after apply)
+      + default_route_table_id               = (known after apply)
+      + default_security_group_id            = (known after apply)
+      + dhcp_options_id                      = (known after apply)
+      + enable_dns_hostnames                 = (known after apply)
+      + enable_dns_support                   = true
+      + enable_network_address_usage_metrics = (known after apply)
+      + id                                   = (known after apply)
+      + instance_tenancy                     = "default"
+      + ipv6_association_id                  = (known after apply)
+      + ipv6_cidr_block                      = (known after apply)
+      + ipv6_cidr_block_network_border_group = (known after apply)
+      + main_route_table_id                  = (known after apply)
+      + owner_id                             = (known after apply)
+      + region                               = "ca-central-1"
+      + tags                                 = {
+          + "Name" = "project_vpc"
+        }
+      + tags_all                             = {
+          + "Name" = "project_vpc"
+        }
+    }
+
+Plan: 16 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + EC2_Instance_ID          = (known after apply)
+  + EC2_SG                   = (known after apply)
+  + RDS_MYSQL_Security_Group = (known after apply)
+  + igw                      = (known after apply)
+  + priave_subnet_id         = (known after apply)
+  + private_route_table      = (known after apply)
+  + public_route_table       = (known after apply)
+  + public_subnet_id         = (known after apply)
+  + rds_database_name        = "vetapp"
+  + rds_endpoint             = (known after apply)
+  + rds_instance_id          = (known after apply)
+  + rds_port                 = (known after apply)
+  + vpcid                    = (known after apply)
+
+Do you want to perform these actions?
+  Terraform will perform the actions described above.
+  Only 'yes' will be accepted to approve.
+
+  Enter a value: yes
+
+aws_vpc.fvpc: Creating...
+aws_vpc.fvpc: Creation complete after 5s [id=vpc-085313148ef8b8c65]
+aws_route_table.pri_route_table: Creating...
+aws_subnet.private_sub: Creating...
+aws_internet_gateway.igw: Creating...
+aws_subnet.public_sub: Creating...
+aws_route_table.pri_route_table0: Creating...
+aws_subnet.private_sub0: Creating...
+aws_security_group.Project_ec2_SG: Creating...
+aws_subnet.private_sub: Creation complete after 2s [id=subnet-03333e6a069820f38]
+aws_route_table.pri_route_table: Creation complete after 2s [id=rtb-0bcb93c84dd7f37f3]
+aws_route_table_association.private_assoc: Creating...
+aws_subnet.private_sub0: Creation complete after 2s [id=subnet-093362f77c3f854ca]
+aws_db_subnet_group.mysql_subnet_group: Creating...
+aws_internet_gateway.igw: Creation complete after 2s [id=igw-0aed743ec49f365e2]
+aws_route_table.pub_route_table: Creating...
+aws_route_table.pri_route_table0: Creation complete after 2s [id=rtb-0489958dcc42467cc]
+aws_route_table_association.private_assoc0: Creating...
+aws_route_table_association.private_assoc: Creation complete after 1s [id=rtbassoc-09260a8dcc0cc7ef2]
+aws_route_table_association.private_assoc0: Creation complete after 1s [id=rtbassoc-07ee631ab546b2e62]
+aws_route_table.pub_route_table: Creation complete after 3s [id=rtb-0cebed9d2193a657e]
+aws_db_subnet_group.mysql_subnet_group: Creation complete after 3s [id=project-mysql-subnet-group]
+aws_security_group.Project_ec2_SG: Creation complete after 6s [id=sg-0d9b9e0450e7fba5c]
+aws_security_group.Project_rds_SG: Creating...
+aws_subnet.public_sub: Still creating... [00m10s elapsed]
+aws_security_group.Project_rds_SG: Creation complete after 5s [id=sg-0adab5440284ece73]
+aws_db_instance.project_mysql: Creating...
+aws_subnet.public_sub: Creation complete after 16s [id=subnet-03b3d346e42131df4]
+aws_route_table_association.public_assoc: Creating...
+aws_instance.project_ec2: Creating...
+aws_route_table_association.public_assoc: Creation complete after 1s [id=rtbassoc-06fa63ac5aadcfdab]
+aws_db_instance.project_mysql: Still creating... [00m10s elapsed]
+aws_instance.project_ec2: Still creating... [00m10s elapsed]
+aws_db_instance.project_mysql: Still creating... [00m20s elapsed]
+aws_instance.project_ec2: Creation complete after 16s [id=i-0d9e47565dbd3e6c7]
+aws_db_instance.project_mysql: Still creating... [00m30s elapsed]
+aws_db_instance.project_mysql: Still creating... [00m40s elapsed]
+aws_db_instance.project_mysql: Still creating... [00m50s elapsed]
+aws_db_instance.project_mysql: Still creating... [01m00s elapsed]
+aws_db_instance.project_mysql: Still creating... [01m10s elapsed]
+aws_db_instance.project_mysql: Still creating... [01m20s elapsed]
+aws_db_instance.project_mysql: Still creating... [01m30s elapsed]
+aws_db_instance.project_mysql: Still creating... [01m40s elapsed]
+aws_db_instance.project_mysql: Still creating... [01m50s elapsed]
+aws_db_instance.project_mysql: Still creating... [02m00s elapsed]
+aws_db_instance.project_mysql: Still creating... [02m10s elapsed]
+aws_db_instance.project_mysql: Still creating... [02m20s elapsed]
+aws_db_instance.project_mysql: Still creating... [02m30s elapsed]
+aws_db_instance.project_mysql: Still creating... [02m40s elapsed]
+aws_db_instance.project_mysql: Still creating... [02m50s elapsed]
+aws_db_instance.project_mysql: Still creating... [03m00s elapsed]
+aws_db_instance.project_mysql: Still creating... [03m10s elapsed]
+aws_db_instance.project_mysql: Still creating... [03m20s elapsed]
+aws_db_instance.project_mysql: Still creating... [03m30s elapsed]
+aws_db_instance.project_mysql: Still creating... [03m40s elapsed]
+aws_db_instance.project_mysql: Still creating... [03m50s elapsed]
+aws_db_instance.project_mysql: Still creating... [04m00s elapsed]
+aws_db_instance.project_mysql: Still creating... [04m10s elapsed]
+aws_db_instance.project_mysql: Still creating... [04m20s elapsed]
+aws_db_instance.project_mysql: Still creating... [04m30s elapsed]
+aws_db_instance.project_mysql: Still creating... [04m40s elapsed]
+aws_db_instance.project_mysql: Still creating... [04m50s elapsed]
+aws_db_instance.project_mysql: Still creating... [05m00s elapsed]
+aws_db_instance.project_mysql: Creation complete after 5m1s [id=db-BYU66XZ5D6PXXG2SABPWD7RRIU]
+
+Apply complete! Resources: 16 added, 0 changed, 0 destroyed.
+
+Outputs:
+
+EC2_Instance_ID = "i-0d9e47565dbd3e6c7"
+EC2_SG = "sg-0d9b9e0450e7fba5c"
+RDS_MYSQL_Security_Group = "sg-0adab5440284ece73"
+igw = "igw-0aed743ec49f365e2"
+priave_subnet_id = "subnet-03333e6a069820f38"
+private_route_table = "rtb-0bcb93c84dd7f37f3"
+public_route_table = "rtb-0cebed9d2193a657e"
+public_subnet_id = "subnet-03b3d346e42131df4"
+rds_database_name = "vetapp"
+rds_endpoint = "project-mysql.cv8mg4saihm7.ca-central-1.rds.amazonaws.com:3306"
+rds_instance_id = "db-BYU66XZ5D6PXXG2SABPWD7RRIU"
+rds_port = 3306
+vpcid = "vpc-085313148ef8b8c65"
+
+C:\Terraform_Project>
