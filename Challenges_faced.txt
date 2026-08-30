@@ -1,0 +1,83 @@
+
+Issue I faced was during the image deployment stage of our GitHub Actions pipeline. The pipeline successfully built and pushed the Docker image, but when the 
+workflow tried to update the Kubernetes manifest with the new image tag and push that change back to GitHub, it failed with a permission error.
+
+Error:
+
+remote: Permission to ... denied to github-actions[bot].
+fatal: unable to access ...
+
+solution:-> 
+
+
+I checked the GitHub repository permissions and realized that the GitHub Actions workflow didn't have write permission to the repository contents. 
+I configured the workflow with the required contents write permission and used the GitHub Actions token for authentication.
+
+
+Result
+
+"After that, the pipeline was able to automatically update the Kubernetes manifest with the new image tag and commit the change back to GitHub.
+ ArgoCD then detected the Git change and deployed the new version."
+
+
+
+==============================================================================
+
+
+Another problem: GitHub Actions triggering itself
+
+
+when i pushed code in git at that time workflow triggered then again when ci.yml flow update the manifest and push into git at that time also workflow was triggering. 
+
+solution:==> so i resolved the using [skip ci]
+    
+        While commiting the changes in ci flow:
+
+        git commit -m "Update image to build 73 [skip ci]"
+
+
+==============================================================================
+
+
+Another problem that is CI pipeline was failing during the Maven test phase because the Spring Boot application expected a database connection, but the CI runner 
+didn't have the required database configuration.
+
+
+
+solution: I used a MySQL service container in GitHub Actions
+
+    services:
+  mysql:
+    image: mysql:8.0
+    env:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: vetapp
+    ports:
+      - 3306:3306
+
+   Then configured the application to connect to that database during CI.
+
+
+==============================================================================
+IN Minikube:
+
+
+I faced several issues while setting up my microservices application on Minikube. Initially, I had a Docker permission issue when using the Docker driver, which I 
+resolved by fixing the Docker socket permissions. After deploying multiple microservices, some Pods remained Pending because the node had insufficient allocatable CPU. 
+I investigated this using kubectl describe node and kubectl top pods and realized that Kubernetes scheduling is based on resource requests, not just current CPU
+utilization. I also faced application accessibility issues with NodePort and Ingress. I learned how traffic flows from NodePort or the Ingress Controller through the
+Service to the Pod and verified the configuration using kubectl get svc, kubectl get ingress and endpoint information.
+
+For MYSQL, I implemented a StatefulSet with a PVC because I needed data to survive Pod restarts. I tested this by deleting the PostgreSQL Pod and verifying that the
+ database data persisted. I also encountered and fixed a volumeMount configuration error during the StatefulSet setup."
+
+
+
+
+
+
+
+
+
+
+
