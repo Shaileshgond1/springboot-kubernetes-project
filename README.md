@@ -25,7 +25,7 @@ This project has been designed in order to meet the necessity of clinic operatio
 
 ## Architecture
 
-![CI-CD Architecture diagram](images/Architecture.png)
+![CI-CD Architecture diagram](images/Architecture.jpeg)
 
 # GitHub Actions CI/CD Pipeline for Spring Boot Kubernetes Project
 
@@ -1891,51 +1891,6 @@ Prometheus → Grafana → Dashboard
 **Manages Prometheus configuration and discovers Kubernetes monitoring resources such as ServiceMonitors.**
 
 ---
-
-# 29. One-Line Interview Explanation
-
-> "I deployed Prometheus and Grafana using the kube-prometheus-stack Helm chart. My Spring Boot application exposes Prometheus metrics through `/actuator/prometheus`. I created a Kubernetes Service and ServiceMonitor, where the ServiceMonitor selects the application Service using labels and configures Prometheus to scrape the metrics every 15 seconds. Prometheus stores the time-series metrics, and Grafana uses Prometheus as its data source to query the metrics using PromQL and display them through dashboards."
-
----
-
-## Technologies Used
-
-- Kubernetes
-- Helm
-- Prometheus
-- Grafana
-- Prometheus Operator
-- kube-state-metrics
-- Node Exporter
-- Alertmanager
-- Spring Boot Actuator
-- PromQL
-
----
-
-## Project Flow
-
-```text
-Spring Boot
-    ↓
-Actuator Prometheus Endpoint
-    ↓
-Kubernetes Service
-    ↓
-ServiceMonitor
-    ↓
-Prometheus Operator
-    ↓
-Prometheus
-    ↓
-PromQL
-    ↓
-Grafana
-    ↓
-Monitoring Dashboard
-```
-
-This setup provides application-level and Kubernetes-level observability in a Kubernetes environment.
 
 
 
