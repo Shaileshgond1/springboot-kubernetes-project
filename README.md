@@ -21,3 +21,29 @@ This project has been designed in order to meet the necessity of clinic operatio
 | ```alper@mail.com```	 | x | - | x | 12 |
 | ```ferhat@mail.com```	 | x | - | x | 12 |
 
+
+
+# Kubernetes Monitoring with Prometheus and Grafana
+
+This project demonstrates how to monitor a Spring Boot application running on Kubernetes using Prometheus and Grafana.
+
+## Architecture
+
+![CI-CD Architecture diagram](images/architecture.png)
+
+## How It Works
+
+...
+
+
+
+
+
+
+
+
+
+
+
+
+
