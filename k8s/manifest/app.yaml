@@ -19,5 +19,5 @@ spec:
     spec:
       containers:
         - name: con1
-          image: sw1236/springboot-kubernetes-project:79
+          image: sw1236/springboot-kubernetes-project:80
 
