@@ -1,0 +1,15 @@
+First verify the database
+
+Inside MySQL, run:
+
+USE vetapp;
+SHOW TABLES;
+
+kubectl cp vet_app.sql application/statefulsetapp-0:/tmp/vet_app.sql
+
+verify : kubectl exec -it statefulsetapp-0 -n application -- ls -l /tmp/vet_app.sql
+
+kubectl exec -it statefulsetapp-0 -n application -- mysql -u appuser -p
+iims --> password
+USE vetapp;
+SOURCE /tmp/vet_app.sql;
