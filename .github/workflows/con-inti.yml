@@ -102,7 +102,7 @@ jobs:
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
 
-          git add k8s/manifest/app.yaml
+          git add manifests/k8s/app.yaml
           git commit -m "Update image to build ${{ github.run_number }} [skip ci]"
           git push
 
