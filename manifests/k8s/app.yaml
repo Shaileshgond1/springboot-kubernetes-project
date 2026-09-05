@@ -15,4 +15,4 @@ spec:
     spec:
       containers:
         - name: mycon
-          image: sw1236/springboot-kubernetes-project:92
+          image: sw1236/springboot-kubernetes-project:94
