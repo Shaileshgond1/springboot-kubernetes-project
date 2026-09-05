@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: statefulsetapp
+  namespace: application
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      db: dev
+  template:
+    metadata:
+      labels:
+        db: dev
+    spec:  
+      containers:
+        - name: mymysql
+          image: mysql:8   
+
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: appsecret
+                  key:  MYSQL_ROOT_PASSWORD
+                
+            - name: MYSQL_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: appconfigmap
+                  key: MYSQL_DATABASE
+
+            - name : MYSQL_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: appconfigmap
+                  key: MYSQL_USER
+
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                   name: appsecret
+                   key: MYSQL_PASSWORD 
+
+
+
+          resources:
+            requests:
+              cpu: "300m"
+              memory: "500Mi"
+            limits:    
+              cpu: "500m"
+              memory: "800Mi"
+
+
+
+
+          volumeMounts:
+            - name: mysqlstorage
+              mountPath: /var/lib/mysql  
+
+
+
+      volumes:
+        - name: mysqlstorage
+          persistentVolumeClaim:
+            claimName: projectpvc 

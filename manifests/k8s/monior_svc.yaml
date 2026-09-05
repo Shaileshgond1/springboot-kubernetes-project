@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: monitorservice
+  namespace: application
+  labels:
+    stack: monitoring
+spec:
+  selector:
+    city: pune
+  ports:
+    - name: mon
+      port: 91
+      targetPort: 8080

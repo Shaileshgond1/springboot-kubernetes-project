@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: appservice
+  namespace: application
+spec:
+  type: NodePort
+  selector:
+    city: pune
+  ports:
+    - name: http
+      port: 90
+      targetPort: 8080
+      nodePort: 30003  
