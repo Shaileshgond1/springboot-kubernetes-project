@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: mycon
-          image: sw1236/springboot-kubernetes-project:93
+          image: sw1236/springboot-kubernetes-project:96
 
           startupProbe:
             httpGet:
