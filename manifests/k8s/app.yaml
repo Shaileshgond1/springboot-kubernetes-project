@@ -3,16 +3,47 @@ kind: Deployment
 metadata:
   name: apppod
   namespace: application
+
 spec:
-  replicas: 1
+  replicas: 5
+
   selector:
     matchLabels:
       city: pune
-  template:    
+
+  template:
     metadata:
       labels:
         city: pune
+
     spec:
       containers:
         - name: mycon
-          image: sw1236/springboot-kubernetes-project:94
+          image: sw1236/springboot-kubernetes-project:93
+
+          startupProbe:
+            httpGet:
+              path: /actuator/prometheus
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 20
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/prometheus
+              port: 8080
+            periodSeconds: 10
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/prometheus
+              port: 8080
+            periodSeconds: 5
+
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "300Mi"
+            limits:
+              cpu: "150m"
+              memory: "500Mi"
