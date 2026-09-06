@@ -26,19 +26,24 @@ spec:
               path: /actuator/prometheus
               port: 8080
             periodSeconds: 10
-            failureThreshold: 30
+            timeoutSeconds: 5
+            failureThreshold: 32
 
           livenessProbe:
             httpGet:
               path: /actuator/prometheus
               port: 8080
             periodSeconds: 10
+            timeoutSeconds: 5 
+            failureThreshold: 3
 
           readinessProbe:
             httpGet:
               path: /actuator/prometheus
               port: 8080
             periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
 
           resources:
             requests:
